@@ -27,24 +27,24 @@ def test_player():
 def test_actions():
     assert actions([["X", "O", "X"],
             [None, "X", None],
-            [None, None, "O"]]) == {(2, 1), (2, 3), (3, 1), (3, 2)}
+            [None, None, "O"]]) == {(1, 0), (1, 2), (2, 0), (2, 1)}
     
 def test_result():
     assert result([[None, None, None],
             [None, None, None],
-            [None, None, None]], (1, 1)) == [["X", None, None],
+            [None, None, None]], (0, 0)) == [["X", None, None],
             [None, None, None],
             [None, None, None]]
     
     assert result([[None, None, None],
             [None, None, None],
-            [None, None, None]], (2, 2)) == [[None, None, None],
+            [None, None, None]], (1, 1)) == [[None, None, None],
             [None, "X", None],
             [None, None, None]]
     
     assert result([[None, None, None],
             [None, "X", None],
-            [None, None, None]], (1, 1)) == [["O", None, None],
+            [None, None, None]], (0, 0)) == [["O", None, None],
             [None, "X", None],
             [None, None, None]]
     
