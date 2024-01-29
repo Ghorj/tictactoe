@@ -50,7 +50,6 @@ def player(board) -> str:
         return "X"
 
 
-
 def actions(board) -> set:
     """
     Returns set of all possible actions (i, j) available on the board.
@@ -87,8 +86,6 @@ def actions(board) -> set:
     
     return actions
             
-    
-
 
 def result(board, action) -> list:
     """
@@ -106,15 +103,22 @@ def result(board, action) -> list:
     # create virtual board
     virtual_board = [row.copy() for row in board]
 
+    # raise exception if move is not on the board
+    if i < 0 or j < 0 or i > 2 or j > 2:
+        raise ValueError("Movement out of bounds")
+    
     # modify the matrix adding the correspondant piece
     if virtual_board[i][j] == EMPTY:
 
         # add the corresponding piece
         virtual_board[i][j] = player(board)
     
+    # if move has been made raise error
+    else:
+        raise ValueError("Move already made")
+       
     # return new board
     return virtual_board
-
 
 
 def winner(board) -> str:
@@ -126,14 +130,18 @@ def winner(board) -> str:
     Returns:
         winner (str)
     """
+    # check columns to find winner
     winner = check_columns(board)
 
-    if winner == None:
+    # if there is no winner check rows to find winner
+    if winner is None:
         winner = check_rows(board)
 
-        if winner == None:
-            winner = check_diagonals(board)
+    # if no winner check diagonals to find winner
+    if winner is None:
+        winner = check_diagonals(board)
 
+    # return winner
     return winner
 
 
@@ -146,19 +154,19 @@ def check_columns(board) -> str:
     Returns:
         winner (str)
     """
-    winner = None
-    for i in range(3):
+    # check the 3 columns
+    for col in range(3):
 
-        match = board[0][i]
-
-        if board[1][i] == board[2][i]:
-
-            if board[1][i] == match:
-
-                winner = match
+        # if all rows for that column contain "X" return "X"
+        if all(board[row][col] == "X" for row in range(3)):
+            return "X"
+        
+        # if all rows for that column contain "O" return "O"
+        elif all(board[row][col] == "O" for row in range(3)):
+            return "O"
     
-    return winner
-
+    # if no winner return None
+    return None
 
 
 def check_rows(board) -> str:
@@ -170,20 +178,19 @@ def check_rows(board) -> str:
     Returns:
         winner (str)
     """
-    winner = None
-
+    # check each row on the board
     for row in board:
 
-        match = row[0]
-
-        if row[1] == row[2]:
-
-            if row[1] == match:
-
-                winner = row[0]
-
+        # count number of "X". If 3, return "X"
+        if row.count("X") == 3:
+            return "X"
+        
+        # count number of "O". If 3, return "O"
+        elif row.count("O") == 3:
+            return "O"
     
-    return winner
+    # if no winner return None
+    return None
 
 
 def check_diagonals(board) -> str:
@@ -195,23 +202,16 @@ def check_diagonals(board) -> str:
     Returns:
         winner (str)
     """
-    winner = None
-
-    match = board[1][1]
-
-    if board[0][0] == board[2][2]:
-
-        if board[0][0] == match:
-
-            winner = match
+    # if all positions in the diagonal are "X" return "X"
+    if all(board[i][i] == "X" for i in range(3)) or all(board[i][2 - i] == "X" for i in range(3)):
+        return "X"
     
-    elif board[0][2] == board[2][0]:
+    # if all positions in the diagonal are "O" return "O"
+    if all(board[i][i] == "O" for i in range(3)) or all(board[i][2 - i] == "O" for i in range(3)):
+        return "O"
 
-        if board[0][2] == match:
-
-            winner = match
-    
-    return winner
+    # if no winner return None
+    return None
 
 
 def terminal(board) -> bool:
@@ -223,20 +223,19 @@ def terminal(board) -> bool:
     Returns:
         bool
     """
-    if winner(board) == "X" or winner(board) == "O":
+    if winner(board) is not None:
         return True
     
-    # loop through board to find None
-    else:
-        for row in board:
-            for position in row:
+    for row in board:
 
-                # if there's an empty space return False
-                if position == EMPTY:
-                    return False
+        for position in row:
 
-        # if there are no empty spaces return True        
-        return True        
+            # if there's an empty space return False
+            if position == EMPTY:
+                return False
+
+    # if there are no empty spaces return True        
+    return True        
 
 
 def utility(board) -> int:

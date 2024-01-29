@@ -80,6 +80,20 @@ def test_terminal():
             ["X", "X", "O"],
             ["O", "O", "X"]]) == True
     
+    assert terminal([[None, "O", "X"],
+            ["O", None, "X"],
+            ["O", "X", "X"]]) == True
+    
     assert terminal([[None, None, None],
             [None, None, None],
             [None, None, None]]) == False
+    
+    
+def test_winner():
+    assert winner([["X", "O", "X"],
+            ["O", "X", None],
+            ["O", "O", "X"]]) == "X"
+    
+    assert winner([["X", "O", "X"],
+            ["O", "X", None],
+            ["X", "O", "O"]]) == "X"
